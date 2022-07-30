@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import init, { add } from "react-image";
+import init, { create_image } from "react-image";
 
 function App() {
    const [ans, setAns] = useState(0);
    useEffect(() => {
      init().then(() => {
-       setAns(add(1, 1));
+       setAns(create_image(256, 256));
      })
    }, [])
   return (
