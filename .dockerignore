@@ -1,0 +1,7 @@
+.idea
+build
+lib
+node_modules
+public
+src
+target

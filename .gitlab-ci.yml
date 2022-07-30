@@ -1,20 +1,40 @@
 stages:
+- dockerize
 - build
 - deploy
 
 variables:
   PUBLIC_URL: /sia-watermarking-2
+  CONTAINER_IMAGE: registry.gitlab.com/$CI_PROJECT_PATH
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_DRIVER: overlay2
+  DOCKER_CACHE_PATH: .cache/docker
 
 cache:
   paths:
   - build
 
+dockerize:
+  services:
+    - docker:dind
+  stage: dockerize
+  image: docker:latest
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+    - CONTAINER_IMAGE=$(echo $CONTAINER_IMAGE | tr '[:upper:]' '[:lower:]')
+    - docker build --tag $CONTAINER_IMAGE:$CI_COMMIT_SHA --tag $CONTAINER_IMAGE:latest .
+    - docker push $CONTAINER_IMAGE:$CI_COMMIT_SHA
+    - docker push $CONTAINER_IMAGE:latest
+  when: manual
+
 build:
-  image: rust:latest
+  image: registry.gitlab.com/zhuvikin/sia-watermarking-2:latest
   stage: build
   script:
-  - cargo install wasm-pack
-  - npm run build:wasm && npm run build
+  - source $HOME/.bashrc
+  - npm install
+  - npm run build:wasm
+  - npm run build
   artifacts:
     expire_in: 30 mins
     paths:
