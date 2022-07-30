@@ -1,0 +1,33 @@
+stages:
+- build
+- deploy
+
+variables:
+  PUBLIC_URL: /sia-watermarking-2
+
+cache:
+  paths:
+  - build
+
+build:
+  image: rust:latest
+  stage: build
+  script:
+  - cargo install wasm-pack
+  - npm run build:wasm && npm run build
+  artifacts:
+    expire_in: 30 mins
+    paths:
+    - ./build
+
+pages:
+  stage: deploy
+  before_script:
+  - mv public _public
+  - mv build public
+  - cp public/index.html public/404.html
+  script:
+  - echo "The site will be deployed to $CI_PAGES_URL"
+  artifacts:
+    paths:
+    - public
