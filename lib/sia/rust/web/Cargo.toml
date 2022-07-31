@@ -16,7 +16,7 @@ watermarking = { path = "../watermarking" }
 [dependencies.image]
 version = "0.24.3"
 default-features = false
-features = ["gif", "jpeg", "png", "pnm", "tiff", "bmp"]
+features = ["gif", "jpeg", "png", "tiff", "bmp"]
 
 [dependencies.web-sys]
 version = "0.3.59"
