@@ -1,5 +1,5 @@
 build-release: build-test
-	cargo build --release
+	cargo build --release && npm run build
 
 build-test: build
 	cargo test
