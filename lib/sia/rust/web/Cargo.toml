@@ -1,0 +1,17 @@
+[package]
+name = "web"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm-bindgen = "0.2.78"
+console_error_panic_hook = "0.1.7"
+watermarking = { path = "../watermarking" }
+
+[dependencies.image]
+version = "0.24.3"
+default-features = false
+features = ["gif", "jpeg", "png", "pnm", "tiff", "bmp"]

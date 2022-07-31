@@ -1,0 +1,16 @@
+[package]
+name = "watermarking"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+
+[dependencies.image]
+version = "0.24.3"
+default-features = false
+features = ["gif", "jpeg", "png", "pnm", "tiff", "bmp"]
+
+[dependencies.imageproc]
+version = "0.23.0"
+default-features = false
+features = []
