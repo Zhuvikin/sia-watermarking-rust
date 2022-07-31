@@ -3,8 +3,10 @@ import './App.css';
 
 const Content = React.lazy(() => import('./Content/Content'));
 
-export default () => (
+const App = () => (
   <Suspense fallback={<div>Loading...</div>}>
     <Content />
   </Suspense>
 );
+
+export default App;
