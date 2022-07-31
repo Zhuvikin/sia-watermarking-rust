@@ -33,7 +33,7 @@ build:
   script:
   - source $HOME/.bashrc
   - npm install
-  - make build
+  - make build-release
   - make test-cli
   artifacts:
     expire_in: 30 mins
