@@ -1,8 +1,10 @@
+mod process;
+mod wavelet;
+
+use crate::process::process_channel;
 use image::{
-    imageops, DynamicImage, GenericImage, GenericImageView, GrayImage, ImageBuffer, Luma, Pixel,
-    Rgba,
+    imageops, DynamicImage, GenericImage, GenericImageView, ImageBuffer, Luma, Pixel, Rgba,
 };
-use imageproc::contrast::equalize_histogram;
 
 pub fn watermark(image: DynamicImage) -> DynamicImage {
     let color_type = image.color();
@@ -80,8 +82,4 @@ pub fn watermark(image: DynamicImage) -> DynamicImage {
         rgb_image.copy_from(&out, 0, 0).unwrap();
         DynamicImage::from(rgb_image)
     };
-}
-
-fn process_channel(channel: GrayImage) -> GrayImage {
-    equalize_histogram(&channel)
 }
