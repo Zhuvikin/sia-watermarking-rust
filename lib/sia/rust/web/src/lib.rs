@@ -3,7 +3,7 @@ mod logging;
 mod web_image;
 
 use image::io::Reader as ImageReader;
-use image::{DynamicImage, GenericImage, GenericImageView, ImageBuffer, RgbaImage};
+use image::{DynamicImage, GenericImage, GenericImageView, ImageBuffer};
 use js_sys::{Array, Uint8Array};
 use std::io::Cursor;
 use wasm_bindgen::prelude::*;
@@ -64,7 +64,7 @@ pub fn watermark(raw_data: Vec<u8>) -> WatermarkedImage {
     let mut buffer = ImageBuffer::new(width, height);
     buffer.copy_from(&image.clone(), 0, 0).unwrap();
 
-    let watermarked = watermarking::watermark(DynamicImage::from(buffer));
+    let watermarked = watermarking::watermark(DynamicImage::from(buffer).blur(3.0));
     let output_pixels = watermarked.into_rgba8().into_raw();
 
     return WatermarkedImage {

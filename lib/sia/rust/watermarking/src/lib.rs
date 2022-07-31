@@ -69,17 +69,17 @@ pub fn watermark(image: DynamicImage) -> DynamicImage {
         *pixel = Rgba([red[0], green[0], blue[0], alpha[0]]);
     }
 
-    if !color_type.has_color() && color_type.has_alpha() {
-        return DynamicImage::from(imageops::grayscale_alpha(&out));
+    return if !color_type.has_color() && color_type.has_alpha() {
+        DynamicImage::from(imageops::grayscale_alpha(&out))
     } else if color_type.has_color() && color_type.has_alpha() {
-        return DynamicImage::from(out);
+        DynamicImage::from(out)
     } else if !color_type.has_color() {
-        return DynamicImage::from(imageops::grayscale(&out));
+        DynamicImage::from(imageops::grayscale(&out))
     } else {
         let mut rgb_image = DynamicImage::new_rgb8(width, height);
         rgb_image.copy_from(&out, 0, 0).unwrap();
-        return DynamicImage::from(rgb_image);
-    }
+        DynamicImage::from(rgb_image)
+    };
 }
 
 fn process_channel(channel: GrayImage) -> GrayImage {
