@@ -33,12 +33,14 @@ build:
   script:
   - source $HOME/.bashrc
   - npm install
-  - npm run build:wasm
-  - npm run build
+  - make build
+  - make test-cli
   artifacts:
     expire_in: 30 mins
     paths:
     - ./build
+    - ./out
+    - ./target
 
 pages:
   stage: deploy

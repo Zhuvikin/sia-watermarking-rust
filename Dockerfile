@@ -2,7 +2,7 @@ FROM rust:1.62.1
 
 RUN cargo install wasm-pack
 
-RUN apt-get update && apt-get install -y curl
+RUN apt-get update && apt-get install -y curl make
 
 # nvm environment variables
 ENV NODE_VERSION 18.6.0
