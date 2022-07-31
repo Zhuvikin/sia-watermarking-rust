@@ -1,22 +1,31 @@
-use image::{DynamicImage, GenericImage, GenericImageView, GrayImage, ImageBuffer, imageops, Luma, Pixel, Rgba};
+use image::{
+    imageops, DynamicImage, GenericImage, GenericImageView, GrayImage, ImageBuffer, Luma, Pixel,
+    Rgba,
+};
 use imageproc::contrast::equalize_histogram;
 
 pub fn watermark(image: DynamicImage) -> DynamicImage {
     let color_type = image.color();
     let (width, height) = image.dimensions();
 
-    let mut red_channel: ImageBuffer<Luma<u8>, Vec<<Luma<u8> as Pixel>::Subpixel>> = ImageBuffer::new(width, height);
-    let mut green_channel: ImageBuffer<Luma<u8>, Vec<<Luma<u8> as Pixel>::Subpixel>> = ImageBuffer::new(width, height);
-    let mut blue_channel: ImageBuffer<Luma<u8>, Vec<<Luma<u8> as Pixel>::Subpixel>> = ImageBuffer::new(width, height);
-    let mut alpha_channel: ImageBuffer<Luma<u8>, Vec<<Luma<u8> as Pixel>::Subpixel>> = ImageBuffer::new(width, height);
-    let mut out: ImageBuffer<Rgba<u8>, Vec<<Rgba<u8> as Pixel>::Subpixel>> = ImageBuffer::new(width, height);
-    let temp: ImageBuffer<Rgba<u8>, Vec<<Rgba<u8> as Pixel>::Subpixel>> = ImageBuffer::new(width, height);
+    let mut red_channel: ImageBuffer<Luma<u8>, Vec<<Luma<u8> as Pixel>::Subpixel>> =
+        ImageBuffer::new(width, height);
+    let mut green_channel: ImageBuffer<Luma<u8>, Vec<<Luma<u8> as Pixel>::Subpixel>> =
+        ImageBuffer::new(width, height);
+    let mut blue_channel: ImageBuffer<Luma<u8>, Vec<<Luma<u8> as Pixel>::Subpixel>> =
+        ImageBuffer::new(width, height);
+    let mut alpha_channel: ImageBuffer<Luma<u8>, Vec<<Luma<u8> as Pixel>::Subpixel>> =
+        ImageBuffer::new(width, height);
+    let mut out: ImageBuffer<Rgba<u8>, Vec<<Rgba<u8> as Pixel>::Subpixel>> =
+        ImageBuffer::new(width, height);
+    let temp: ImageBuffer<Rgba<u8>, Vec<<Rgba<u8> as Pixel>::Subpixel>> =
+        ImageBuffer::new(width, height);
 
     for (x, y, _pixel) in temp.enumerate_pixels() {
         let rgba = image.get_pixel(x, y);
 
         #[allow(deprecated)]
-            let (k1, k2, k3, k4) = rgba.channels4();
+        let (k1, k2, k3, k4) = rgba.channels4();
 
         red_channel.put_pixel(x, y, Luma([k1]));
         if color_type.has_color() {

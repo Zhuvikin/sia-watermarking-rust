@@ -1,9 +1,9 @@
 extern crate getopts;
 
-use std::{env, fs};
 use std::fs::File;
 use std::path::Path;
 use std::time::Instant;
+use std::{env, fs};
 
 use getopts::Options;
 use image::ImageFormat;
@@ -38,16 +38,37 @@ fn process(inputs: &Vec<String>, suffix_option: Option<String>, output_option: O
                 let filename = input_path.file_stem().unwrap();
                 let extension = input_path.extension().unwrap();
 
-                let mut output_path = format!("{}-{}.{}", filename.to_str().unwrap(), suffix, extension.to_str().unwrap()).to_owned();
+                let mut output_path = format!(
+                    "{}-{}.{}",
+                    filename.to_str().unwrap(),
+                    suffix,
+                    extension.to_str().unwrap()
+                )
+                .to_owned();
                 if output_option.is_some() {
                     let output_folder = output_folder_path.canonicalize();
-                    output_path = format!("{}/{}", output_folder.unwrap().to_str().unwrap(), output_path);
+                    output_path = format!(
+                        "{}/{}",
+                        output_folder.unwrap().to_str().unwrap(),
+                        output_path
+                    );
                 }
 
                 let mut output_file = File::create(output_path.as_str()).unwrap();
-                watermarked.write_to(&mut output_file, ImageFormat::from_path(&output_path).unwrap()).unwrap();
+                watermarked
+                    .write_to(
+                        &mut output_file,
+                        ImageFormat::from_path(&output_path).unwrap(),
+                    )
+                    .unwrap();
 
-                println!("Watermarked {} ({} -> {} channels) in {}", output_path, channels_count, watermarked.color().channel_count(), Elapsed::from(&timer));
+                println!(
+                    "Watermarked {} ({} -> {} channels) in {}",
+                    output_path,
+                    channels_count,
+                    watermarked.color().channel_count(),
+                    Elapsed::from(&timer)
+                );
             }
         }
         None => println!("No output image"),
@@ -68,8 +89,10 @@ fn main() {
     opts.optopt("o", "", "set watermarked images output folder", "OUT");
     opts.optflag("h", "help", "print this help menu");
     let matches = match opts.parse(&args[1..]) {
-        Ok(m) => { m }
-        Err(f) => { panic!("{}", f.to_string()) }
+        Ok(m) => m,
+        Err(f) => {
+            panic!("{}", f.to_string())
+        }
     };
     if matches.opt_present("h") {
         print_usage(&program, opts);
