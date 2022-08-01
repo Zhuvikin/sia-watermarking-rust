@@ -13,21 +13,22 @@ pub fn image_dwt_forward(image: GrayImage, level: usize) -> GrayImage {
 }
 
 pub fn dwt_forward_1d(input: Vec<f64>, level: usize) -> Vec<f64> {
-    let mut result = input.clone();
-    transform(
-        &mut result,
-        Operation::Forward,
-        &dwt::wavelet::Haar::new(),
-        level,
-    );
-    result
+    dwt_1d(input, level, true)
 }
 
 pub fn dwt_backward_1d(input: Vec<f64>, level: usize) -> Vec<f64> {
+    dwt_1d(input, level, false)
+}
+
+fn dwt_1d(input: Vec<f64>, level: usize, x: bool) -> Vec<f64> {
     let mut result = input.clone();
     transform(
         &mut result,
-        Operation::Inverse,
+        if x {
+            Operation::Forward
+        } else {
+            Operation::Inverse
+        },
         &dwt::wavelet::Haar::new(),
         level,
     );
