@@ -13,21 +13,21 @@ pub fn image_dwt_forward(image: GrayImage, level: usize) -> GrayImage {
 }
 
 pub fn dwt_forward_1d(input: Vec<f64>, level: usize) -> Vec<f64> {
-    dwt_1d(input, level, true)
-}
-
-pub fn dwt_backward_1d(input: Vec<f64>, level: usize) -> Vec<f64> {
     dwt_1d(input, level, false)
 }
 
-fn dwt_1d(input: Vec<f64>, level: usize, x: bool) -> Vec<f64> {
+pub fn dwt_backward_1d(input: Vec<f64>, level: usize) -> Vec<f64> {
+    dwt_1d(input, level, true)
+}
+
+fn dwt_1d(input: Vec<f64>, level: usize, is_backward: bool) -> Vec<f64> {
     let mut result = input.clone();
     transform(
         &mut result,
-        if x {
-            Operation::Forward
-        } else {
+        if is_backward {
             Operation::Inverse
+        } else {
+            Operation::Forward
         },
         &dwt::wavelet::Haar::new(),
         level,
@@ -35,12 +35,18 @@ fn dwt_1d(input: Vec<f64>, level: usize, x: bool) -> Vec<f64> {
     result
 }
 
-pub fn dwt_forward_2d(input: Vec<f64>, width: usize, height: usize, level: usize) -> Vec<f64> {
+pub fn dwt_2d(
+    input: Vec<f64>,
+    width: usize,
+    height: usize,
+    level: usize,
+    is_backward: bool,
+) -> Vec<f64> {
     let mut transformed_rows = vec![];
     for i in 0..height {
         let mut row = vec![0.0; width];
         row.copy_from_slice(&input[i * height..i * height + width]);
-        let row_dwt = dwt_1d(row, level, true);
+        let row_dwt = dwt_1d(row, level, is_backward);
         transformed_rows = [&transformed_rows[..], &row_dwt[..]].concat();
     }
 
@@ -52,7 +58,7 @@ pub fn dwt_forward_2d(input: Vec<f64>, width: usize, height: usize, level: usize
             .step_by(height)
             .copied()
             .collect();
-        let column_dwt = dwt_1d(column, level, true);
+        let column_dwt = dwt_1d(column, level, is_backward);
         transformed_columns = [&transformed_columns[..], &column_dwt[..]].concat();
     }
 
@@ -80,9 +86,17 @@ fn dwt_2d_test_level_1() {
     ];
 
     // test forward 2D transform
-    let actual = dwt_forward_2d(source.clone(), 4, 4, 1);
+    let mut actual = dwt_2d(source.clone(), 4, 4, 1, false);
     for (i, element) in actual.iter().enumerate() {
         let expected_element = expected[i];
+        let actual_element = *element;
+        assert_approx_eq!(expected_element, actual_element, DELTA);
+    }
+
+    // test backward 2D transform
+    actual = dwt_2d(actual.clone(), 4, 4, 1, true);
+    for (i, element) in actual.iter().enumerate() {
+        let expected_element = source[i];
         let actual_element = *element;
         assert_approx_eq!(expected_element, actual_element, DELTA);
     }
@@ -104,7 +118,7 @@ fn dwt_1d_test_level_1() {
         -frac1sqrt2,
     ];
 
-    // test forward transform
+    // test forward 1D transform
     let mut actual = dwt_forward_1d(source.clone(), 1);
     for (i, element) in actual.iter().enumerate() {
         let expected_element = expected[i];
@@ -112,7 +126,7 @@ fn dwt_1d_test_level_1() {
         assert_approx_eq!(expected_element, actual_element, DELTA);
     }
 
-    // test backward transform
+    // test backward 1D transform
     actual = dwt_backward_1d(actual, 1);
     for (i, element) in actual.iter().enumerate() {
         let expected_element = source[i];
@@ -137,6 +151,7 @@ fn dwt_1d_test_level_2() {
         -frac1sqrt2,
     ];
 
+    // test forward 1D transform
     let mut actual = dwt_forward_1d(source.clone(), 2);
     for (i, element) in actual.iter().enumerate() {
         let expected_element = expected[i];
@@ -144,6 +159,7 @@ fn dwt_1d_test_level_2() {
         assert_approx_eq!(expected_element, actual_element, DELTA);
     }
 
+    // test backward 1D transform
     actual = dwt_backward_1d(actual, 2);
     for (i, element) in actual.iter().enumerate() {
         let expected_element = source[i];
