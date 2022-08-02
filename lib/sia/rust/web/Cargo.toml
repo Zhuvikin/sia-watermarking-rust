@@ -6,6 +6,11 @@ edition = "2021"
 [lib]
 crate-type = ["cdylib"]
 
+[profile.release]
+lto = true
+opt-level = 'z'
+# apply wasm-opt also! see https://rustwasm.github.io/book/reference/code-size.html for more options
+
 [dependencies]
 wasm-bindgen = "0.2.78"
 console_error_panic_hook = "0.1.7"
