@@ -1,5 +1,4 @@
 mod process;
-mod wavelet;
 
 use crate::process::process_channel;
 use image::{

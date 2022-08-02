@@ -16,3 +16,8 @@ features = ["gif", "jpeg", "png", "pnm", "tiff", "bmp"]
 version = "0.23.0"
 default-features = false
 features = []
+
+[dependencies.ndarray]
+version = "0.15.6"
+default-features = false
+features = []
