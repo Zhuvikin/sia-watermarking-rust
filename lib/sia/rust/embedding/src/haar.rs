@@ -1,20 +1,11 @@
-use dwt::{transform, Operation};
-use image::GrayImage;
-use ndarray::{Array, Array2, Axis, Ix};
+pub(crate) mod constants;
+pub(crate) mod utils;
 
-use crate::process::wavelet::utils::{
+use crate::haar::utils::{
     assert_approximately_equals_1d, assert_approximately_equals_2d, slice2d_as_nd_array,
 };
-
-mod utils;
-
-pub fn image_dwt_forward(image: GrayImage, level: usize) -> GrayImage {
-    let data = dwt_forward_1d(vec![1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0], level);
-
-    println!("{:?}", data);
-
-    image
-}
+use dwt::{transform, Operation};
+use ndarray::{Array, Array2, Axis, Ix};
 
 pub fn dwt_forward_1d(input: Vec<f64>, level: usize) -> Vec<f64> {
     dwt_1d(input, level, false)
@@ -60,7 +51,6 @@ pub fn dwt_2d(mut input: Array2<f64>, level: usize, is_backward: bool) -> Array2
             let row_dwt = dwt_1d(row_vector, 1, is_backward);
             let array = Array::from(row_dwt);
             array.assign_to(row);
-            println!("{:?}", array);
         }
 
         // process columns
@@ -69,7 +59,6 @@ pub fn dwt_2d(mut input: Array2<f64>, level: usize, is_backward: bool) -> Array2
             let column_dwt = dwt_1d(column_vector, 1, is_backward);
             let array = Array::from(column_dwt);
             array.assign_to(column);
-            println!("{:?}", array);
         }
 
         if is_backward {

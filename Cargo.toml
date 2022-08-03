@@ -3,4 +3,6 @@ members = [
     "lib/sia/rust/cli",
     "lib/sia/rust/watermarking",
     "lib/sia/rust/web",
+    "lib/sia/rust/embedding",
+    "lib/sia/rust/encoding",
 ]

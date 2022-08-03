@@ -1,0 +1,13 @@
+[package]
+name = "embedding"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+dwt = "0.5.2"
+assert_approx_eq = "1.1.0"
+
+[dependencies.ndarray]
+version = "0.15.6"
+default-features = false
+features = []

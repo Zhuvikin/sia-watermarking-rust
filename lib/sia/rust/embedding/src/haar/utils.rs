@@ -16,7 +16,7 @@ pub fn assert_approximately_equals_2d(expected: &Array2<f64>, actual: &Array2<f6
     for (i, row) in actual.outer_iter().enumerate() {
         for (j, element) in row.iter().enumerate() {
             let expected_element = expected[[i, j]];
-            let actual_element = *element;
+            let actual_element = *element as f64;
             assert_approx_eq!(expected_element, actual_element, DELTA);
         }
     }
