@@ -1,7 +1,4 @@
-pub(crate) mod constants;
-pub(crate) mod utils;
-
-use crate::haar::utils::{
+use crate::utils::{
     assert_approximately_equals_1d, assert_approximately_equals_2d, slice2d_as_nd_array,
 };
 use dwt::{transform, Operation};

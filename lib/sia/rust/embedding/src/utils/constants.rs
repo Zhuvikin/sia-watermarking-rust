@@ -1,4 +1,4 @@
-pub(crate) static TEST_MATRIX: &'static [[f64; 32]; 32] = &[
+static TEST_MATRIX: &'static [[f64; 32]; 32] = &[
     [
         232., 31., 6., 112., 62., 181., 33., 54., 27., 91., 60., 154., 118., 54., 157., 58., 126.,
         224., 130., 23., 255., 9., 254., 12., 32., 10., 20., 176., 25., 95., 41., 194.,
@@ -134,7 +134,7 @@ pub(crate) static TEST_MATRIX: &'static [[f64; 32]; 32] = &[
     ],
 ];
 
-pub fn get_test_matrix() -> Vec<Vec<f64>> {
+pub(crate) fn get_test_matrix() -> Vec<Vec<f64>> {
     let mut result = vec![];
     for row in TEST_MATRIX.iter() {
         let mut vec = vec![0.; row.len()];
