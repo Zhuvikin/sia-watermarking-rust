@@ -19,7 +19,7 @@ pub struct WatermarkFromDwtCoefficientsReader<'a> {
 }
 
 fn get_capacity(width: usize, height: usize) -> usize {
-    ((width * height) as f64 / 8.).floor() as usize - 1
+    ((width * height) as f64 / 8.).floor() as usize
 }
 
 impl<'a> WatermarkToDwtCoefficientsWriter<'a> {
@@ -86,12 +86,15 @@ impl<'a> WatermarkToDwtCoefficientsWriter<'a> {
     }
 
     pub fn close(&mut self) {
-        println!("write NULL");
+        let (width, height) = self.domain.dim();
+        if self.offset_row >= height {
+            println!("full capacity is used");
+            return;
+        }
 
-        let (width, _) = self.domain.dim();
+        println!("write NULL");
         self.write_byte(NULL);
         let bits_written = self.offset_row * width + self.offset_column;
-
         println!("{:?} bits written", bits_written)
     }
 }
@@ -107,8 +110,15 @@ impl<'a> WatermarkFromDwtCoefficientsReader<'a> {
     }
 
     pub fn read(&mut self) -> Vec<u8> {
+        let (width, height) = self.domain.dim();
+        let capacity = get_capacity(width, height);
+
         let mut extracted = vec![];
         loop {
+            if extracted.len() == capacity {
+                println!("full capacity read");
+                break;
+            }
             let byte = self.read_next();
             if byte == NULL {
                 println!("NULL read");
