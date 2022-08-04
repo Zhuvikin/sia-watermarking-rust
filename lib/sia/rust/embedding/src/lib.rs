@@ -1,13 +1,13 @@
-mod haar;
-mod io;
-mod utils;
+use ndarray::{Array2, Axis, Ix};
 
 use crate::haar::dwt_2d;
 use crate::utils::constants::get_test_matrix;
 use crate::utils::{assert_approximately_equals_2d, slice2d_as_nd_array};
-use ndarray::{Array2, ArrayViewMut, AssignElem, Axis, Ix, Ix2};
 
-static EOF: &'static [u8] = &[1, 1, 1, 1, 1, 1, 1, 1];
+mod haar;
+mod io;
+mod utils;
+
 static DWT_LEVELS: usize = 3;
 
 pub fn embed(image_matrix: Array2<u8>, bytes: Vec<u8>, depth: f64) -> Array2<u8> {
@@ -54,10 +54,6 @@ pub fn extract(image_matrix: Array2<u8>, depth: f64) -> Vec<u8> {
         .0;
 
     io::read(&ll3, depth)
-}
-
-fn available_capacity(width: usize, height: usize) -> usize {
-    width * height
 }
 
 #[test]
