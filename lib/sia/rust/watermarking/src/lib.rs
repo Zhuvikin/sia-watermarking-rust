@@ -1,11 +1,13 @@
 mod process;
 
-use crate::process::process_channel;
+use crate::process::watermark_channel;
 use image::{
     imageops, DynamicImage, GenericImage, GenericImageView, ImageBuffer, Luma, Pixel, Rgba,
 };
 
 pub fn watermark(image: DynamicImage) -> DynamicImage {
+    let depth = 50.0;
+
     let color_type = image.color();
     let (width, height) = image.dimensions();
 
@@ -38,10 +40,10 @@ pub fn watermark(image: DynamicImage) -> DynamicImage {
         }
     }
 
-    red_channel = process_channel(red_channel);
+    red_channel = watermark_channel(&red_channel, depth);
     if color_type.has_color() {
-        green_channel = process_channel(green_channel);
-        blue_channel = process_channel(blue_channel);
+        green_channel = watermark_channel(&green_channel, depth);
+        blue_channel = watermark_channel(&blue_channel, depth);
     }
     //if color_type.has_alpha() {
     //    alpha_channel = process_channel(alpha_channel);

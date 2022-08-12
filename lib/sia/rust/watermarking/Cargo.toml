@@ -6,7 +6,9 @@ edition = "2021"
 [dependencies]
 dwt = "0.5.2"
 assert_approx_eq = "1.1.0"
+base64 = "0.13.0"
 embedding = { path = "../embedding" }
+encoding = { path = "../encoding" }
 
 [dependencies.image]
 version = "0.24.3"
