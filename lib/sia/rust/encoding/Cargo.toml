@@ -5,3 +5,7 @@ edition = "2021"
 
 [dependencies]
 labrador-ldpc = "1.0.1"
+
+[dependencies.bitvec]
+version = "1.0.1"
+features = []

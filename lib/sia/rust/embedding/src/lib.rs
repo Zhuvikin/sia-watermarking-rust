@@ -1,3 +1,5 @@
+extern crate ndarray;
+
 use ndarray::{Array2, Axis, Ix};
 
 use crate::haar::dwt_2d;
