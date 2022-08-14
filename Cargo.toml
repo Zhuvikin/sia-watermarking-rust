@@ -5,4 +5,6 @@ members = [
     "lib/sia/rust/web",
     "lib/sia/rust/embedding",
     "lib/sia/rust/encoding",
+    "lib/sia/rust/feature",
+    "lib/sia/rust/three-bit-quantization",
 ]
