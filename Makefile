@@ -8,7 +8,7 @@ build:
 	npm run build:wasm
 
 test-cli:
-	target/release/cli -s watermarked -o out test/tinycross-small-gray.png test/tinycross-small.png test/tinycross.png test/bird.jpeg test/bird-gray.jpeg test/test-color-alpha-128.png test/test-gray-alpha-128.png
+	target/release/cli -s watermarked -o out test/aerial.tiff test/peppers.jpg test/peppers.tiff
 
 clean:
 	rm -rf build target lib/sia/js
