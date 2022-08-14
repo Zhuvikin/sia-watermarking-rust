@@ -1,5 +1,9 @@
-import { watermark_image, WatermarkedImageWeb } from 'react-image';
-import { WatermarkedImage } from './image';
+import {
+  get_watermarking_process,
+  ImageModel as ImageModelWasm,
+  WatermarkingProcess as WatermarkingProcessWasm,
+} from 'react-image';
+import { ImageModel, WatermarkingProcess } from './image';
 
 const mimeRegex = /^data:image\/[a-zA-Z0-9]+;base64,/;
 
@@ -26,15 +30,21 @@ const decode = (base64_string: string) =>
 export const base64ToUInt8Array = (dataUri: string): Uint8Array =>
   decode(removeMime(dataUri));
 
-export const toWatermarkedImage = (
-  watermarkedImageWeb: WatermarkedImageWeb,
-): WatermarkedImage => {
+export const toImageModel = (imageModelWasm: ImageModelWasm): ImageModel => {
   return {
-    width: watermarkedImageWeb.get_width(),
-    height: watermarkedImageWeb.get_height(),
-    format: watermarkedImageWeb.get_format(),
-    original: watermarkedImageWeb.get_original().slice(),
-    watermarked: watermarkedImageWeb.get_watermarked().slice(),
+    width: imageModelWasm.get_width(),
+    height: imageModelWasm.get_height(),
+    data: imageModelWasm.get_data().slice(),
+  };
+};
+
+export const toWatermarkingProcess = (
+  watermarkingProcessWasm: WatermarkingProcessWasm,
+): WatermarkingProcess => {
+  return {
+    sourceFormat: watermarkingProcessWasm.get_source_format(),
+    source: toImageModel(watermarkingProcessWasm.get_source()),
+    watermarked: toImageModel(watermarkingProcessWasm.get_watermarked()),
   };
 };
 
@@ -46,5 +56,15 @@ export const fileToBase64 = (file: File) =>
     reader.onerror = error => reject(error);
   });
 
-export const base64ToImage = (str: string) =>
-  toWatermarkedImage(watermark_image(base64ToUInt8Array(str)));
+export const sourceBase64ToWatermarkingProcess = (
+  str: string,
+  embeddingDepth: number,
+  featuresQuantizationStep: number,
+) =>
+  toWatermarkingProcess(
+    get_watermarking_process(
+      base64ToUInt8Array(str),
+      embeddingDepth,
+      featuresQuantizationStep,
+    ),
+  );

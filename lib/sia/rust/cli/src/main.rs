@@ -32,7 +32,7 @@ fn process(inputs: &Vec<String>, suffix_option: Option<String>, output_option: O
                 let input_image = image::open(input).unwrap();
 
                 let channels_count = input_image.color().channel_count();
-                let watermarked = watermarking::watermark(input_image);
+                let watermarked = watermarking::watermark(input_image, 100.0, 1.0);
 
                 let input_path = Path::new(input);
                 let filename = input_path.file_stem().unwrap();

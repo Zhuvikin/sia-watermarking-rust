@@ -1,7 +1,11 @@
-export type WatermarkedImage = {
+export type WatermarkingProcess = {
+  sourceFormat: string;
+  source: ImageModel;
+  watermarked: ImageModel;
+};
+
+export type ImageModel = {
   width: number;
   height: number;
-  format: string;
-  original: Uint8Array;
-  watermarked: Uint8Array;
+  data: Uint8Array;
 };

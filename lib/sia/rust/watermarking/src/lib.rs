@@ -5,9 +5,11 @@ use image::{
     imageops, DynamicImage, GenericImage, GenericImageView, ImageBuffer, Luma, Pixel, Rgba,
 };
 
-pub fn watermark(image: DynamicImage) -> DynamicImage {
-    let depth = 50.0;
-
+pub fn watermark(
+    image: DynamicImage,
+    embedding_depth: f64,
+    features_quantization_step: f64,
+) -> DynamicImage {
     let color_type = image.color();
     let (width, height) = image.dimensions();
 
@@ -40,10 +42,12 @@ pub fn watermark(image: DynamicImage) -> DynamicImage {
         }
     }
 
-    red_channel = watermark_channel(&red_channel, depth);
+    red_channel = watermark_channel(&red_channel, embedding_depth, features_quantization_step);
     if color_type.has_color() {
-        green_channel = watermark_channel(&green_channel, depth);
-        blue_channel = watermark_channel(&blue_channel, depth);
+        green_channel =
+            watermark_channel(&green_channel, embedding_depth, features_quantization_step);
+        blue_channel =
+            watermark_channel(&blue_channel, embedding_depth, features_quantization_step);
     }
     //if color_type.has_alpha() {
     //    alpha_channel = process_channel(alpha_channel);

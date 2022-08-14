@@ -1,32 +1,32 @@
 import React from 'react';
 import Canvas from '../Canvas/Canvas';
-import { WatermarkedImage } from '../Content/image';
+import { WatermarkingProcess } from '../Content/image';
 
 type WatermarkingPreviewProps = {
-  image: WatermarkedImage | undefined;
+  watermarkingProcess: WatermarkingProcess | undefined;
 };
 
-const WatermarkingPreview = ({ image }: WatermarkingPreviewProps) => {
-  if (!image) {
+const WatermarkingPreview = ({ watermarkingProcess }: WatermarkingPreviewProps) => {
+  if (!watermarkingProcess) {
     return <div className="WatermarkingPreview">Loading...</div>;
   }
   return (
     <div className="WatermarkingPreview">
-      <p>Format: {image.format.toUpperCase()}</p>
+      <p>Format: {watermarkingProcess.sourceFormat.toUpperCase()}</p>
       <p>
-        Size: {image.width}x{image.height}
+        Size: {watermarkingProcess.source.width}x{watermarkingProcess.source.height}
       </p>
       <div>
         <Canvas
-          data={image.original}
-          width={image.width}
-          height={image.height}
+          data={watermarkingProcess.source.data}
+          width={watermarkingProcess.source.width}
+          height={watermarkingProcess.source.height}
         />
         {
           <Canvas
-            data={image.watermarked}
-            width={image.width}
-            height={image.height}
+            data={watermarkingProcess.watermarked.data}
+            width={watermarkingProcess.watermarked.width}
+            height={watermarkingProcess.watermarked.height}
           />
         }
       </div>
