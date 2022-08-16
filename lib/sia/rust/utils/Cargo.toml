@@ -1,5 +1,5 @@
 [package]
-name = "feature"
+name = "utils"
 version = "0.1.0"
 edition = "2021"
 
@@ -9,7 +9,6 @@ edition = "2021"
 num = "0.4.0"
 assert_approx_eq = "1.1.0"
 special = "0.8.1"
-utils = { path = "../utils" }
 
 [dependencies.ndarray]
 version = "0.15.6"

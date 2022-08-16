@@ -1,10 +1,11 @@
 use ndarray::{ArrayBase, Ix2, ViewRepr};
 
-use crate::get_test_matrix;
+use utils::constants::get_test_matrix;
+use utils::vector_2d_as_nd_array;
+
 use crate::io::steganography::{
     WatermarkFromDwtCoefficientsReader, WatermarkToDwtCoefficientsWriter,
 };
-use crate::utils::slice2d_as_nd_array;
 
 mod steganography;
 
@@ -25,7 +26,7 @@ pub fn read<'a>(domain: &'a ArrayBase<ViewRepr<&'a mut f64>, Ix2>, depth: f64) -
 
 #[test]
 fn io_write_and_read_test_with_1_byte_capacity() {
-    let mut domain = slice2d_as_nd_array(vec![
+    let mut domain = vector_2d_as_nd_array(vec![
         vec![873.5000, 906.5000, 1104.875, 944.6250],
         vec![976.7500, 925.5000, 1032.125, 1078.250],
         vec![1028.125, 1057.000, 1051.875, 998.6250],
@@ -45,7 +46,7 @@ fn io_write_and_read_test_with_1_byte_capacity() {
 
 #[test]
 fn io_write_and_read_test_with_many_bytes_capacity() {
-    let mut domain = slice2d_as_nd_array(get_test_matrix());
+    let mut domain = vector_2d_as_nd_array(get_test_matrix());
     let depth = 10.0;
 
     println!("original domain: {:?}", domain);

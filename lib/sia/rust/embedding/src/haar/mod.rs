@@ -1,8 +1,8 @@
-use crate::utils::{
-    assert_approximately_equals_1d, assert_approximately_equals_2d, slice2d_as_nd_array,
-};
 use dwt::{transform, Operation};
 use ndarray::{Array, Array2, Axis, Ix};
+use utils::{
+    assert_approximately_equals_1d, assert_approximately_equals_2d, vector_2d_as_nd_array,
+};
 
 pub fn dwt_forward_1d(input: Vec<f64>, level: usize) -> Vec<f64> {
     dwt_1d(input, level, false)
@@ -75,14 +75,14 @@ pub fn dwt_2d(mut input: Array2<f64>, level: usize, is_backward: bool) -> Array2
 
 #[test]
 fn dwt_2d_test_level_1() {
-    let source = slice2d_as_nd_array(vec![
+    let source = vector_2d_as_nd_array(vec![
         vec![1.0, 2.0, 3.0, 4.0],
         vec![5.0, 6.0, 7.0, 8.0],
         vec![1.0, 2.0, 3.0, 4.0],
         vec![5.0, 6.0, 7.0, 8.0],
     ]);
 
-    let expected = slice2d_as_nd_array(vec![
+    let expected = vector_2d_as_nd_array(vec![
         vec![7.0, 11.0, -1.0, -1.0],
         vec![7.0, 11.0, -1.0, -1.0],
         vec![-4.0, -4.0, 0.0, 0.0],
@@ -98,14 +98,14 @@ fn dwt_2d_test_level_1() {
 
 #[test]
 fn dwt_2d_test_level_2() {
-    let source = slice2d_as_nd_array(vec![
+    let source = vector_2d_as_nd_array(vec![
         vec![1.0, 2.0, 3.0, 4.0],
         vec![5.0, 6.0, 7.0, 8.0],
         vec![1.0, 2.0, 3.0, 4.0],
         vec![5.0, 6.0, 7.0, 8.0],
     ]);
 
-    let expected = slice2d_as_nd_array(vec![
+    let expected = vector_2d_as_nd_array(vec![
         vec![18.0, -4.0, -1.0, -1.0],
         vec![0.0, 0.0, -1.0, -1.0],
         vec![-4.0, -4.0, 0.0, 0.0],
