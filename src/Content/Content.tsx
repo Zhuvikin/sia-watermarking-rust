@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import WatermarkingPreview from '../WatermarkingPreview/WatermarkingPreview';
-import init from 'react-image';
+import init from 'sia-watermarking-lib';
 import * as loadImage from './peppers.jpg';
 import {
   sourceBase64ToWatermarkingProcess,
@@ -47,6 +47,7 @@ const Content = (_: ContentProps) => {
 
   return (
     <div>
+      <h3>Selective Image Authentication</h3>
       <div className="file-selector">
         <input
           type="file"

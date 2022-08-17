@@ -8,7 +8,7 @@ edition = "2021"
 [dependencies]
 num = "0.4.0"
 assert_approx_eq = "1.1.0"
-special = "0.8.1"
+puruspe = "0.2.0"
 
 [dependencies.ndarray]
 version = "0.15.6"

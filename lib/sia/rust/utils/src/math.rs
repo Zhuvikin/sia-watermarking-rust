@@ -1,8 +1,8 @@
-use special::Gamma;
+use puruspe::gamma;
 
 pub fn factorial(num: f64) -> f64 {
     if num.fract() != 0.0 {
-        return (1. + num).gamma();
+        return gamma(1. + num);
     }
     match num.round() as i64 {
         0 | 1 => 1.,

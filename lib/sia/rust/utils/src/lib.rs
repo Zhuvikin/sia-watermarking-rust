@@ -1,5 +1,6 @@
 pub mod constants;
 pub mod math;
+pub mod pseudo_random;
 
 use assert_approx_eq::assert_approx_eq;
 use ndarray::Array2;

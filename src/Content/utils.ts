@@ -2,7 +2,7 @@ import {
   get_watermarking_process,
   ImageModel as ImageModelWasm,
   WatermarkingProcess as WatermarkingProcessWasm,
-} from 'react-image';
+} from 'sia-watermarking-lib';
 import { ImageModel, WatermarkingProcess } from './image';
 
 const mimeRegex = /^data:image\/[a-zA-Z0-9]+;base64,/;

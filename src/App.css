@@ -14,3 +14,7 @@ canvas {
   margin-right: 1rem;
   border: 3px solid black;
 }
+
+h3 {
+  padding: 1rem;
+}

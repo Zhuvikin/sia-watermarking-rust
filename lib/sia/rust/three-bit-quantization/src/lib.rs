@@ -4,7 +4,6 @@ use bitvec::macros::internal::funty::Fundamental;
 use bitvec::prelude::{BitVec, Lsb0};
 use bitvec::slice::BitSlice;
 use bitvec::view::BitView;
-use rand::prelude::*;
 use std::ops::Add;
 
 fn quantize(features: &Vec<f64>, step: f64) -> Vec<i64> {
@@ -30,7 +29,7 @@ pub fn three_bit_quantization(features: &Vec<f64>, step: f64) -> BitVec<u8, Lsb0
             let b: f64 = step * ((*quantized_feature as f64) + 0.5);
 
             // println!("f: {:?}, qf: {:?}, b: {:?}", feature, quantized_feature, b);
-            let bit2 = (*feature >= b);
+            let bit2 = *feature >= b;
 
             [bit0, bit1, bit2]
         })
@@ -143,12 +142,13 @@ pub fn three_bit_dequantization(
 
 #[cfg(test)]
 mod tests {
+    use utils::pseudo_random::{Generate, PseudoRandom};
     use super::*;
-
-    const RANDOM_SEED: u64 = 2;
 
     #[test]
     fn quantization_short_test() {
+        let mut random = PseudoRandom { seed: 0 };
+
         let step = 1.0;
         let noise_magnitude = 1.0;
 
@@ -165,13 +165,12 @@ mod tests {
             perturbation_vector
         );
 
-        let mut random = StdRng::seed_from_u64(RANDOM_SEED);
-
         let noised_features: Vec<f64> = features
             .clone()
             .iter()
             .map(|feature| {
-                feature + random.gen_range(-step * noise_magnitude..step * noise_magnitude)
+                let noise = random.generate(-step * noise_magnitude, step * noise_magnitude);
+                feature + noise
             })
             .collect();
         println!("noised features: {:?}", noised_features);
@@ -191,6 +190,8 @@ mod tests {
 
     #[test]
     fn quantization_long_test() {
+        let mut random = PseudoRandom { seed: 0 };
+
         for step in [
             0.03,
             0.125,
@@ -208,8 +209,10 @@ mod tests {
             15.0,
         ] {
             let noise_magnitude = 1.0; // should be between 0 and 1
-            let mut random = StdRng::seed_from_u64(RANDOM_SEED);
-            let features = (1..1024).map(|i| random.gen_range(-10.0..10.0)).collect();
+
+            let features = (1..1024).map(|i| {
+                random.generate(-10.0, 10.0)
+            }).collect();
 
             let quantized_features = quantize(&features, step);
             println!("quantized features: {:?}", quantized_features);
@@ -219,7 +222,7 @@ mod tests {
                 .clone()
                 .iter()
                 .map(|feature| {
-                    feature + random.gen_range(-step * noise_magnitude..step * noise_magnitude)
+                    feature + random.generate(-step * noise_magnitude, step * noise_magnitude)
                 })
                 .collect();
             println!(
