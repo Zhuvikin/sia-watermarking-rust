@@ -1,13 +1,11 @@
-use crate::feature_types::FeaturesType;
 use ndarray::Array2;
 use num::complex::ComplexFloat;
-use num::Complex;
+
+use crate::feature_types::FeaturesType;
+use crate::moments::zernike::{calculate_zernike_image_moment, get_order_by_features_amount};
 
 pub mod feature_types;
 mod moments;
-
-use crate::moments::zernike::{calculate_zernike_image_moment, get_order_by_features_amount};
-use moments::zernike::get_zernike_matrix;
 
 pub fn calculate_features(
     image: Array2<u8>,

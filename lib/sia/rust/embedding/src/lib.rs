@@ -1,8 +1,6 @@
 extern crate ndarray;
 
 use ndarray::{Array2, Axis, Ix};
-use utils::constants::get_test_matrix;
-use utils::{assert_approximately_equals_2d, vector_2d_as_nd_array};
 
 use crate::haar::dwt_2d;
 
@@ -57,18 +55,27 @@ pub fn extract(image_matrix: Array2<u8>, depth: f64) -> Vec<u8> {
     io::read(&ll3, depth)
 }
 
-#[test]
-fn embed_test() {
-    let source = vector_2d_as_nd_array(get_test_matrix());
+#[cfg(test)]
+mod tests {
+    use utils::constants::get_test_matrix;
 
-    let forward_dwt_1l = dwt_2d(source.clone(), 3, false);
-    let backward_dwt = dwt_2d(forward_dwt_1l.clone(), 3, true);
-    assert_approximately_equals_2d(&source, &backward_dwt);
+    use utils::{assert_approximately_equals_2d, vector_2d_as_nd_array};
 
-    let bytes = vec![7];
-    let depth = 100 as f64;
-    let embedded = embed(source.mapv(|elem| elem.round() as u8), bytes.clone(), depth);
+    use super::*;
 
-    let extracted_bits = extract(embedded, depth);
-    assert_eq!(bytes, extracted_bits);
+    #[test]
+    fn embed_test() {
+        let source = vector_2d_as_nd_array(get_test_matrix());
+
+        let forward_dwt_1l = dwt_2d(source.clone(), 3, false);
+        let backward_dwt = dwt_2d(forward_dwt_1l.clone(), 3, true);
+        assert_approximately_equals_2d(&source, &backward_dwt);
+
+        let bytes = vec![7];
+        let depth = 100 as f64;
+        let embedded = embed(source.mapv(|elem| elem.round() as u8), bytes.clone(), depth);
+
+        let extracted_bits = extract(embedded, depth);
+        assert_eq!(bytes, extracted_bits);
+    }
 }

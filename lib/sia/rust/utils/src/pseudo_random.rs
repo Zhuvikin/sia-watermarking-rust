@@ -22,12 +22,10 @@ impl Generate for PseudoRandom {
         let a = self.seed as f64 * 15485863.;
         (a * a * a % 2038074743.) as f64 / 2038074743.
     }
-
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::assert_approximately_equal;
     use crate::pseudo_random::{Generate, PseudoRandom};
 
     #[test]
@@ -36,12 +34,10 @@ mod tests {
 
         let numbers: Vec<f64> = (1..100).map(|_| random.generate_unit()).collect();
         println!("random unit numbers: {:?}", numbers);
-        numbers.iter().for_each(|n| assert!(0.<= *n && *n <= 1.));
+        numbers.iter().for_each(|n| assert!(0. <= *n && *n <= 1.));
 
-
-        let numbers: Vec<f64> = (1..100).map(|_| random.generate(-2.,5.)).collect();
+        let numbers: Vec<f64> = (1..100).map(|_| random.generate(-2., 5.)).collect();
         println!("random numbers in (-2, 5): {:?}", numbers);
-        numbers.iter().for_each(|n| assert!(-2.<= *n && *n <= 5.));
-
+        numbers.iter().for_each(|n| assert!(-2. <= *n && *n <= 5.));
     }
 }

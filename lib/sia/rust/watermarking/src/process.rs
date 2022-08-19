@@ -2,10 +2,9 @@ use embedding::{embed, extract};
 use encoding::{decode, encode};
 use feature::calculate_features;
 use feature::feature_types::FeaturesType;
-use image::{DynamicImage, GenericImage, GenericImageView, GrayImage, ImageBuffer, Luma};
+use image::{GenericImage, GenericImageView, GrayImage, ImageBuffer, Luma};
 use imageproc::contrast::equalize_histogram;
 use ndarray::Array2;
-use std::ops::Deref;
 use three_bit_quantization::three_bit_quantization;
 
 pub fn watermark_channel(

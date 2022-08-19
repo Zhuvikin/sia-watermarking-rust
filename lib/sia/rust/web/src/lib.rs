@@ -75,6 +75,7 @@ fn get_watermarked(
         original.clone(),
         embedding_depth,
         features_quantization_step,
+        11,
     )
 }
 

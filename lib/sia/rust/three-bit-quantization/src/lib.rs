@@ -4,7 +4,6 @@ use bitvec::macros::internal::funty::Fundamental;
 use bitvec::prelude::{BitVec, Lsb0};
 use bitvec::slice::BitSlice;
 use bitvec::view::BitView;
-use std::ops::Add;
 
 fn quantize(features: &Vec<f64>, step: f64) -> Vec<i64> {
     features
@@ -142,7 +141,12 @@ pub fn three_bit_dequantization(
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use crate::{
+        integer_from_two_bits, mod_four, quantize, three_bit_dequantization,
+        three_bit_quantization, two_bits_from_integer,
+    };
+    use bitvec::bitvec;
+    use bitvec::prelude::Lsb0;
     use utils::pseudo_random::{Generate, PseudoRandom};
 
     #[test]
@@ -206,7 +210,7 @@ mod tests {
         ] {
             let noise_magnitude = 1.0; // should be between 0 and 1
 
-            let features = (1..1024).map(|i| random.generate(-10.0, 10.0)).collect();
+            let features = (1..1024).map(|_i| random.generate(-10.0, 10.0)).collect();
 
             let (quantized_features, perturbation_vector) = three_bit_quantization(&features, step);
 

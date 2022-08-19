@@ -1,8 +1,8 @@
-use crate::moments::zernike::constants::I;
-use ndarray::{Array2, Ix2};
-use num::complex::{Complex64, ComplexFloat};
-use num::Complex;
 use std::f64::consts::{FRAC_1_SQRT_2, PI};
+
+use crate::moments::zernike::constants::I;
+use ndarray::Array2;
+use num::Complex;
 use utils::math::factorial;
 
 mod constants;
@@ -89,13 +89,15 @@ pub fn get_zernike_matrix(order: usize, index: isize, dimension: usize) -> Array
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use std::f64::consts::{FRAC_1_PI, FRAC_PI_2, FRAC_PI_4};
+    use std::f64::consts::{FRAC_PI_2, FRAC_PI_4};
+
     use utils::{
         assert_approximately_equal, assert_approximately_equal_complex,
-        assert_approximately_equal_tuple, assert_approximately_equals_2d,
-        assert_approximately_equals_2d_complex, vector_2d_as_nd_array,
+        assert_approximately_equal_tuple, assert_approximately_equals_2d_complex,
+        vector_2d_as_nd_array,
     };
+
+    use super::*;
 
     #[test]
     fn f_test() {

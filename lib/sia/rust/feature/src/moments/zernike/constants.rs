@@ -1,4 +1,3 @@
-use ndarray::Array2;
 use num::complex::Complex;
 use std::f64::consts::FRAC_1_SQRT_2;
 
