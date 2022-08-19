@@ -13,7 +13,7 @@ fn quantize(features: &Vec<f64>, step: f64) -> Vec<i64> {
         .collect()
 }
 
-pub fn three_bit_quantization(features: &Vec<f64>, step: f64) -> BitVec<u8, Lsb0> {
+pub fn three_bit_quantization(features: &Vec<f64>, step: f64) -> (Vec<i64>, BitVec<u8, Lsb0>) {
     let quantized: Vec<i64> = quantize(&features, step);
     //println!("quantized: {:?}", quantized);
 
@@ -43,7 +43,7 @@ pub fn three_bit_quantization(features: &Vec<f64>, step: f64) -> BitVec<u8, Lsb0
         result.push(bit);
     }
 
-    result
+    (quantized, result)
 }
 
 fn mod_four(quantized_feature: i64) -> u8 {
@@ -72,17 +72,15 @@ pub fn three_bit_dequantization(
     noised_features: &Vec<f64>,
     given_perturbation_vector: &BitVec<u8>,
     step: f64,
-) -> Vec<f64> {
-    let noised_quantized_features = quantize(&noised_features, step);
-    // println!("noised quantized features: {:?}", noised_quantized_features);
-
-    let calculated_perturbation_vector = three_bit_quantization(noised_features, step);
+) -> Vec<i64> {
+    let (noised_quantized_features, calculated_perturbation_vector) =
+        three_bit_quantization(noised_features, step);
     let calculated_perturbation_vector_chunks: Vec<&BitSlice<u8>> = calculated_perturbation_vector
         .chunks(3)
         .map(|chunk| chunk)
         .collect();
 
-    given_perturbation_vector
+    let restored_features = given_perturbation_vector
         .chunks(3)
         .enumerate()
         .map(|(i, given_perturbation_bits)| {
@@ -90,7 +88,7 @@ pub fn three_bit_dequantization(
                 *calculated_perturbation_vector_chunks.get(i).unwrap();
 
             let noised_feature: f64 = *(*noised_features).get(i).unwrap();
-            let noised_quantized_feature: i64 = *(*noised_quantized_features).get(i).unwrap();
+            //let noised_quantized_feature: i64 = *(*noised_quantized_features).get(i).unwrap();
 
             let given_bit1 = given_perturbation_bits.get(0).unwrap().as_u8();
             let given_bit2 = given_perturbation_bits.get(1).unwrap().as_u8();
@@ -137,13 +135,15 @@ pub fn three_bit_dequantization(
                 noised_feature
             }
         })
-        .collect()
+        .collect();
+
+    quantize(&restored_features, step)
 }
 
 #[cfg(test)]
 mod tests {
-    use utils::pseudo_random::{Generate, PseudoRandom};
     use super::*;
+    use utils::pseudo_random::{Generate, PseudoRandom};
 
     #[test]
     fn quantization_short_test() {
@@ -155,11 +155,9 @@ mod tests {
         let features = vec![1.12, 3.73, -26.024, -32.51];
         println!("features: {:?}", features);
 
-        let quantized_features = quantize(&features, step);
+        let (quantized_features, perturbation_vector) = three_bit_quantization(&features, step);
+
         assert_eq!(vec![1, 3, -27, -33], quantized_features);
-
-        let perturbation_vector = three_bit_quantization(&features, step);
-
         assert_eq!(
             bitvec![u8, Lsb0; 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0],
             perturbation_vector
@@ -175,11 +173,9 @@ mod tests {
             .collect();
         println!("noised features: {:?}", noised_features);
 
-        let restored_features =
+        let restored_quantized_features =
             three_bit_dequantization(&noised_features, &perturbation_vector, step);
-        println!("restored features: {:?}", restored_features);
 
-        let restored_quantized_features = quantize(&restored_features, step);
         println!(
             "restored quantized features: {:?}",
             restored_quantized_features
@@ -210,14 +206,12 @@ mod tests {
         ] {
             let noise_magnitude = 1.0; // should be between 0 and 1
 
-            let features = (1..1024).map(|i| {
-                random.generate(-10.0, 10.0)
-            }).collect();
+            let features = (1..1024).map(|i| random.generate(-10.0, 10.0)).collect();
 
-            let quantized_features = quantize(&features, step);
+            let (quantized_features, perturbation_vector) = three_bit_quantization(&features, step);
+
             println!("quantized features: {:?}", quantized_features);
 
-            let perturbation_vector = three_bit_quantization(&features, step);
             let noised_features: Vec<f64> = features
                 .clone()
                 .iter()
@@ -230,10 +224,9 @@ mod tests {
                 quantize(&noised_features, step)
             );
 
-            let restored_features =
+            let restored_quantized_features =
                 three_bit_dequantization(&noised_features, &perturbation_vector, step);
 
-            let restored_quantized_features = quantize(&restored_features, step);
             println!(
                 "restored quantized features: {:?}\n",
                 restored_quantized_features

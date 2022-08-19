@@ -1,11 +1,40 @@
 use crate::moments::zernike::constants::I;
 use ndarray::{Array2, Ix2};
-use num::complex::Complex64;
+use num::complex::{Complex64, ComplexFloat};
 use num::Complex;
-use std::f64::consts::FRAC_1_SQRT_2;
+use std::f64::consts::{FRAC_1_SQRT_2, PI};
 use utils::math::factorial;
 
 mod constants;
+
+pub fn calculate_zernike_image_moment(
+    order: usize,
+    index: usize,
+    image: &Array2<u8>,
+) -> Complex<f64> {
+    let (width, height) = image.dim();
+
+    let zernike_matrix_vector = get_zernike_matrix(order, index as isize, width).into_raw_vec();
+
+    let integral =
+        image
+            .iter()
+            .enumerate()
+            .fold(Complex::new(0., 0.), |accumulator, (i, &next)| {
+                let next_pixel = next as f64;
+                let zernike_multiplier = zernike_matrix_vector.get(i).unwrap();
+
+                return accumulator + zernike_multiplier * next_pixel;
+            });
+
+    let multiplier = (order as f64 + 1.) / PI;
+    let pixels_amount = (width * height) as f64;
+    multiplier * integral / pixels_amount
+}
+
+pub fn get_order_by_features_amount(amount: usize) -> usize {
+    1 + 2 * (amount - 1)
+}
 
 fn f(order: usize, index: usize, s: f64, r: f64) -> f64 {
     let term: f64 = if r == 0. && order as f64 - 2. * s == 0. {
@@ -61,7 +90,7 @@ pub fn get_zernike_matrix(order: usize, index: isize, dimension: usize) -> Array
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::f64::consts::{FRAC_PI_2, FRAC_PI_4};
+    use std::f64::consts::{FRAC_1_PI, FRAC_PI_2, FRAC_PI_4};
     use utils::{
         assert_approximately_equal, assert_approximately_equal_complex,
         assert_approximately_equal_tuple, assert_approximately_equals_2d,
@@ -146,6 +175,45 @@ mod tests {
         assert_approximately_equals_2d_complex(
             &vector_2d_as_nd_array(constants::matrix_zernike_3_3()),
             &get_zernike_matrix(3, 3, 8),
+        );
+    }
+
+    #[test]
+    fn calculate_zernike_moment_test() {
+        let image = vector_2d_as_nd_array(vec![
+            vec![160, 26, 188, 252, 3, 49, 212, 206],
+            vec![240, 126, 183, 47, 40, 49, 111, 168],
+            vec![196, 140, 141, 191, 94, 174, 15, 149],
+            vec![72, 155, 171, 156, 204, 71, 166, 2],
+            vec![244, 164, 164, 65, 51, 137, 185, 123],
+            vec![252, 42, 104, 254, 61, 241, 84, 133],
+            vec![146, 174, 29, 145, 85, 56, 80, 130],
+            vec![114, 67, 163, 80, 165, 129, 101, 42],
+        ]);
+
+        assert_approximately_equal_complex(
+            40.6193 + 0. * I,
+            calculate_zernike_image_moment(0, 0, &image),
+        );
+
+        assert_approximately_equal_complex(
+            -1.90011 + 4.21521 * I,
+            calculate_zernike_image_moment(1, 1, &image),
+        );
+
+        assert_approximately_equal_complex(
+            -16.2877 + 0. * I,
+            calculate_zernike_image_moment(2, 0, &image),
+        );
+
+        assert_approximately_equal_complex(
+            -2.94152 + 0.893115 * I,
+            calculate_zernike_image_moment(2, 2, &image),
+        );
+
+        assert_approximately_equal_complex(
+            -17.2633 - 12.6124 * I,
+            calculate_zernike_image_moment(17, 7, &image),
         );
     }
 }

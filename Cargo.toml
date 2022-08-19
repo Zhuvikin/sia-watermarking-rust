@@ -7,5 +7,6 @@ members = [
     "lib/sia/rust/encoding",
     "lib/sia/rust/feature",
     "lib/sia/rust/three-bit-quantization",
+    "lib/sia/rust/signature",
     "lib/sia/rust/utils",
 ]

@@ -62,19 +62,19 @@ impl<'a> WatermarkToDwtCoefficientsWriter<'a> {
         let (column, row) = get_column_and_row(self.offset, width, height);
 
         let coefficient = self.domain.get_mut(Ix2(row, column)).unwrap();
-        let original_coefficient = coefficient.clone();
+        //let original_coefficient = coefficient.clone();
 
         coefficient
             .assign_elem(self.depth * ((*coefficient / self.depth).round() as f64 + reminder));
 
-        println!(
-            "write ({:?}) to ({:?}, {:?}) : {:?} -> {:?}",
-            if bit { 1 } else { 0 },
-            column,
-            row,
-            original_coefficient,
-            coefficient
-        );
+        //println!(
+        //    "write ({:?}) to ({:?}, {:?}) : {:?} -> {:?}",
+        //    if bit { 1 } else { 0 },
+        //    column,
+        //    row,
+        //    original_coefficient,
+        //    coefficient
+        //);
 
         self.offset += 1;
     }

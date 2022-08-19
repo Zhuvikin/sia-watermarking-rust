@@ -9,6 +9,7 @@ pub fn watermark(
     image: DynamicImage,
     embedding_depth: f64,
     features_quantization_step: f64,
+    features_amount: usize,
 ) -> DynamicImage {
     let color_type = image.color();
     let (width, height) = image.dimensions();
@@ -42,12 +43,25 @@ pub fn watermark(
         }
     }
 
-    red_channel = watermark_channel(&red_channel, embedding_depth, features_quantization_step);
+    red_channel = watermark_channel(
+        &red_channel,
+        embedding_depth,
+        features_quantization_step,
+        features_amount,
+    );
     if color_type.has_color() {
-        green_channel =
-            watermark_channel(&green_channel, embedding_depth, features_quantization_step);
-        blue_channel =
-            watermark_channel(&blue_channel, embedding_depth, features_quantization_step);
+        green_channel = watermark_channel(
+            &green_channel,
+            embedding_depth,
+            features_quantization_step,
+            features_amount,
+        );
+        blue_channel = watermark_channel(
+            &blue_channel,
+            embedding_depth,
+            features_quantization_step,
+            features_amount,
+        );
     }
     //if color_type.has_alpha() {
     //    alpha_channel = process_channel(alpha_channel);

@@ -1,2 +1,2 @@
 mod pseudo_zernike;
-mod zernike;
+pub(crate) mod zernike;
