@@ -134,7 +134,7 @@ static TEST_MATRIX: &'static [[f64; 32]; 32] = &[
     ],
 ];
 
-pub fn get_test_matrix() -> Vec<Vec<f64>> {
+pub fn get_test_32_32_matrix() -> Vec<Vec<f64>> {
     let mut result = vec![];
     for row in TEST_MATRIX.iter() {
         let mut vec = vec![0.; row.len()];

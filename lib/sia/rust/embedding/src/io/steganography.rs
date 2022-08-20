@@ -1,7 +1,7 @@
 use bitvec::prelude::*;
 use ndarray::{ArrayBase, AssignElem, Ix2, ViewRepr};
 
-const MAX_CAPACITY: u8 = 0xFF;
+const MAX_CAPACITY: u16 = 0xFFFF;
 
 pub struct WatermarkToDwtCoefficientsWriter<'a> {
     offset: usize,
@@ -15,9 +15,8 @@ pub struct WatermarkFromDwtCoefficientsReader<'a> {
     depth: f64,
 }
 
-fn get_capacity(width: usize, height: usize) -> usize {
-    ((width * height) as f64 / 8.).floor() as usize // first byte is used to store data length 
-        - 1
+pub fn get_capacity(width: usize, height: usize) -> usize {
+    ((width * height) as f64 / 8.).floor() as usize
 }
 
 fn get_column_and_row(offset: usize, width: usize, height: usize) -> (usize, usize) {
@@ -29,7 +28,7 @@ fn get_column_and_row(offset: usize, width: usize, height: usize) -> (usize, usi
 impl<'a> WatermarkToDwtCoefficientsWriter<'a> {
     pub fn new(domain: &'a mut ArrayBase<ViewRepr<&'a mut f64>, Ix2>, depth: f64) -> Self {
         Self {
-            offset: 8,
+            offset: 0,
             domain,
             depth,
         }
@@ -80,19 +79,19 @@ impl<'a> WatermarkToDwtCoefficientsWriter<'a> {
     }
 
     pub fn close(&mut self) {
-        let bytes_written: u8 = (self.offset as f64 / 8.0).ceil() as u8 - 1;
-        println!("{:?} bytes are written", bytes_written);
-
-        if bytes_written > MAX_CAPACITY {
-            panic!(
-                "data length exceeds maximum allowed capacity of {:?}",
-                bytes_written
-            )
-        }
-
-        // write length of the data to first byte
-        self.write_byte_at(bytes_written, 0);
-        println!("data length header is written");
+        //let bytes_written: u16 = (self.offset as f64 / 8.0).ceil() as u8 - 1;
+        //println!("{:?} bytes are written", bytes_written);
+        //
+        //if bytes_written  > MAX_CAPACITY {
+        //    panic!(
+        //        "data length exceeds maximum allowed capacity of {:?}",
+        //        bytes_written
+        //    )
+        //}
+        //
+        //// write length of the data to first byte
+        //self.write_byte_at(bytes_written, 0);
+        //println!("data length header is written");
     }
 }
 
@@ -107,12 +106,7 @@ impl<'a> WatermarkFromDwtCoefficientsReader<'a> {
 
     pub fn read(&mut self) -> Vec<u8> {
         let (width, height) = self.domain.dim();
-        let capacity = get_capacity(width, height);
-
-        let data_length = self.read_next();
-        if data_length > capacity as u8 {
-            println!("incorrect data length header");
-        }
+        let data_length = get_capacity(width, height);
 
         let mut extracted = vec![];
         loop {
@@ -150,5 +144,17 @@ impl<'a> WatermarkFromDwtCoefficientsReader<'a> {
                 panic!("offset ({:?}, {:?}) is out of bounds", column, row)
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn get_capacity_test() {
+        assert_eq!(32, get_capacity(16, 16));
+        assert_eq!(72, get_capacity(24, 24));
+        assert_eq!(512, get_capacity(64, 64));
     }
 }

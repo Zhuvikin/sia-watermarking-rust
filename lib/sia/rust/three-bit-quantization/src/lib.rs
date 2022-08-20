@@ -4,6 +4,37 @@ use bitvec::macros::internal::funty::Fundamental;
 use bitvec::prelude::{BitVec, Lsb0};
 use bitvec::slice::BitSlice;
 use bitvec::view::BitView;
+use std::io::Read;
+
+pub fn perturbation_vector_as_bytes(bits: &BitVec<u8>) -> Vec<u8> {
+    let vec1 = bits.iter().collect::<BitVec<u8>>();
+    let mut bytes: Vec<u8> = vec![0; (bits.len() as f64 / 8.).ceil() as usize];
+
+    bytes.copy_from_slice(vec1.as_raw_slice());
+    bytes
+}
+
+pub fn perturbation_vector_from_bytes(
+    bytes: &Vec<u8>,
+    perturbation_vector_bits: usize,
+) -> BitVec<u8, Lsb0> {
+    let mut result = bitvec![u8, Lsb0;];
+    let mut i: usize = 0;
+    for byte in bytes {
+        let bits = byte.view_bits::<Lsb0>();
+
+        for bit in bits.iter() {
+            if i < perturbation_vector_bits {
+                let x = !bit.as_bool();
+                result.push(x);
+            } else {
+                break;
+            }
+            i += 1;
+        }
+    }
+    result
+}
 
 fn quantize(features: &Vec<f64>, step: f64) -> Vec<i64> {
     features
@@ -142,8 +173,9 @@ pub fn three_bit_dequantization(
 #[cfg(test)]
 mod tests {
     use crate::{
-        integer_from_two_bits, mod_four, quantize, three_bit_dequantization,
-        three_bit_quantization, two_bits_from_integer,
+        integer_from_two_bits, mod_four, perturbation_vector_as_bytes,
+        perturbation_vector_from_bytes, quantize, three_bit_dequantization, three_bit_quantization,
+        two_bits_from_integer,
     };
     use bitvec::bitvec;
     use bitvec::prelude::Lsb0;
@@ -279,5 +311,33 @@ mod tests {
         assert_eq!(3, mod_four(7));
 
         assert_eq!(0, mod_four(8));
+    }
+
+    #[test]
+    fn bytes_format_test_1() {
+        let perturbation_vector = bitvec![u8, Lsb0; 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0];
+        println!("perturbation vector bits: {:?}", perturbation_vector);
+
+        let bytes = perturbation_vector_as_bytes(&perturbation_vector);
+        println!("perturbation vector bytes: {:?}", bytes);
+
+        let restored = perturbation_vector_from_bytes(&bytes, perturbation_vector.len());
+        println!("restored perturbation vector bits: {:?}", restored);
+
+        assert_eq!(&perturbation_vector, &restored);
+    }
+
+    #[test]
+    fn bytes_format_test_2() {
+        let perturbation_vector = bitvec![u8, Lsb0; 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1];
+        println!("perturbation vector bits: {:?}", perturbation_vector);
+
+        let bytes = perturbation_vector_as_bytes(&perturbation_vector);
+        println!("perturbation vector bytes: {:?}", bytes);
+
+        let restored = perturbation_vector_from_bytes(&bytes, perturbation_vector.len());
+        println!("restored perturbation vector bits: {:?}", restored);
+
+        assert_eq!(&perturbation_vector, &restored);
     }
 }

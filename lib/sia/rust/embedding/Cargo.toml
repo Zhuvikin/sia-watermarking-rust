@@ -6,6 +6,7 @@ edition = "2021"
 [dependencies]
 dwt = "0.5.2"
 utils = { path = "../utils" }
+encoding = { path = "../encoding" }
 
 [dependencies.ndarray]
 version = "0.15.6"

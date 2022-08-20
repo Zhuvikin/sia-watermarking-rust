@@ -4,7 +4,8 @@ use crate::io::steganography::{
     WatermarkFromDwtCoefficientsReader, WatermarkToDwtCoefficientsWriter,
 };
 
-mod steganography;
+pub(crate) mod data;
+pub(crate) mod steganography;
 
 pub fn write<'a>(
     domain: &'a mut ArrayBase<ViewRepr<&'a mut f64>, Ix2>,
@@ -25,7 +26,7 @@ pub fn read<'a>(domain: &'a ArrayBase<ViewRepr<&'a mut f64>, Ix2>, depth: f64) -
 mod tests {
 
     use super::*;
-    use utils::constants::get_test_matrix;
+    use utils::constants::get_test_32_32_matrix;
     use utils::vector_2d_as_nd_array;
 
     #[test]
@@ -39,7 +40,7 @@ mod tests {
         let depth = 10.0;
 
         println!("original domain: {:?}", domain);
-        let bytes = vec![17];
+        let bytes = vec![17, 19];
         write(&mut domain.view_mut(), bytes.clone(), depth);
         println!("domain with byte written: {:?}", domain);
 
@@ -50,11 +51,12 @@ mod tests {
 
     #[test]
     fn io_write_and_read_test_with_many_bytes_capacity() {
-        let mut domain = vector_2d_as_nd_array(get_test_matrix());
+        let mut domain = vector_2d_as_nd_array(get_test_32_32_matrix());
         let depth = 10.0;
 
         println!("original domain: {:?}", domain);
-        let bytes = vec![231, 73];
+        let bytes: Vec<u8> = (0..=127).collect();
+
         write(&mut domain.view_mut(), bytes.clone(), depth);
         println!("domain with byte written: {:?}", domain);
 

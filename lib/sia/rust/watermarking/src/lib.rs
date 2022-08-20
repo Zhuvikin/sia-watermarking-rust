@@ -1,9 +1,14 @@
+extern crate core;
+
 mod process;
+mod watermark;
 
 use crate::process::watermark_channel;
 use image::{
     imageops, DynamicImage, GenericImage, GenericImageView, ImageBuffer, Luma, Pixel, Rgba,
 };
+
+const DWT_LEVELS: usize = 3;
 
 pub fn watermark(
     image: DynamicImage,
@@ -48,6 +53,7 @@ pub fn watermark(
         embedding_depth,
         features_quantization_step,
         features_amount,
+        DWT_LEVELS,
     );
     if color_type.has_color() {
         green_channel = watermark_channel(
@@ -55,12 +61,14 @@ pub fn watermark(
             embedding_depth,
             features_quantization_step,
             features_amount,
+            DWT_LEVELS,
         );
         blue_channel = watermark_channel(
             &blue_channel,
             embedding_depth,
             features_quantization_step,
             features_amount,
+            DWT_LEVELS,
         );
     }
     //if color_type.has_alpha() {
