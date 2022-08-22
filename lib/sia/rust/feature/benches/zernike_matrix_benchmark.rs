@@ -1,9 +1,5 @@
-use criterion::{criterion_group, criterion_main, Benchmark, Criterion};
-use feature::moments::zernike::{calculate_zernike_image_moment, get_zernike_matrix};
-use image::imageops::grayscale;
-use image::{GenericImageView, GrayImage, ImageBuffer, Luma};
-use ndarray::{Array2, ArrayBase, Ix2, OwnedRepr};
-use std::time::Duration;
+use criterion::{criterion_group, criterion_main, Criterion};
+use feature::moments::zernike::get_zernike_matrix;
 
 fn zernike_matrix_benchmark(c: &mut Criterion) {
     let mut group = c.benchmark_group("zernike matrix");
