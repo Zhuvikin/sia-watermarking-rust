@@ -2,13 +2,13 @@ build-release: build-test
 	cargo build --release && npm run build
 
 build-test: build
-	cargo test
+	cargo bench
 
 build:
 	npm run build:wasm
 
 test-cli:
-	target/release/cli -s watermarked -o out test/aerial.tiff test/peppers.jpg test/peppers.tiff
+	target/release/cli -s watermarked -o out test/peppers.jpg test/peppers.tiff
 
 clean:
 	rm -rf build target lib/sia/js
