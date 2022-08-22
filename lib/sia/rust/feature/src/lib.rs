@@ -5,7 +5,7 @@ use crate::feature_types::FeaturesType;
 use crate::moments::zernike::{calculate_zernike_image_moment, get_order_by_features_amount};
 
 pub mod feature_types;
-mod moments;
+pub mod moments;
 
 pub fn calculate_features(
     image: Array2<u8>,

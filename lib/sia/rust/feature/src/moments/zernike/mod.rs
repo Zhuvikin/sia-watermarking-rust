@@ -36,7 +36,7 @@ pub fn get_order_by_features_amount(amount: usize) -> usize {
     1 + 2 * (amount - 1)
 }
 
-fn f(order: usize, index: usize, s: f64, r: f64) -> f64 {
+pub fn f(order: usize, index: usize, s: f64, r: f64) -> f64 {
     let term: f64 = if r == 0. && order as f64 - 2. * s == 0. {
         1.
     } else {
