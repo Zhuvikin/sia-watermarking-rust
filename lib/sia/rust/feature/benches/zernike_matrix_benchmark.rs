@@ -7,19 +7,6 @@ fn zernike_matrix_benchmark(c: &mut Criterion) {
     group.bench_function("zernike matrix 21 0 64x64", |b| {
         b.iter(|| get_zernike_matrix(21, 0, 64))
     });
-    group.bench_function("zernike matrix 21 1 64x64", |b| {
-        b.iter(|| get_zernike_matrix(21, 1, 64))
-    });
-    group.bench_function("zernike matrix 21 2 64x64", |b| {
-        b.iter(|| get_zernike_matrix(21, 2, 64))
-    });
-    group.bench_function("zernike matrix 21 3 64x64", |b| {
-        b.iter(|| get_zernike_matrix(21, 3, 64))
-    });
-    group.bench_function("zernike matrix 21 4 64x64", |b| {
-        b.iter(|| get_zernike_matrix(21, 4, 64))
-    });
-
     group.finish();
 }
 
