@@ -1,11 +1,9 @@
 use std::f64::consts::{FRAC_1_SQRT_2, PI};
 
-use crate::moments::zernike::constants::I;
+use crate::constants::I;
 use ndarray::Array2;
 use num::Complex;
 use utils::math::factorial;
-
-mod constants;
 
 pub fn calculate_zernike_image_moment(
     order: usize,
@@ -30,10 +28,6 @@ pub fn calculate_zernike_image_moment(
     let multiplier = (order as f64 + 1.) / PI;
     let pixels_amount = (width * height) as f64;
     multiplier * integral / pixels_amount
-}
-
-pub fn get_order_by_features_amount(amount: usize) -> usize {
-    1 + 2 * (amount - 1)
 }
 
 pub fn f(order: usize, index: usize, s: f64, r: f64) -> f64 {
@@ -91,6 +85,7 @@ pub fn get_zernike_matrix(order: usize, index: isize, dimension: usize) -> Array
 mod tests {
     use std::f64::consts::{FRAC_PI_2, FRAC_PI_4};
 
+    use crate::constants;
     use utils::{
         assert_approximately_equal, assert_approximately_equal_complex,
         assert_approximately_equal_tuple, assert_approximately_equals_2d_complex,

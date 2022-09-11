@@ -1,12 +1,18 @@
 [workspace]
 members = [
     "lib/sia/rust/cli",
-    "lib/sia/rust/watermarking",
-    "lib/sia/rust/web",
     "lib/sia/rust/embedding",
     "lib/sia/rust/encoding",
     "lib/sia/rust/feature",
-    "lib/sia/rust/three-bit-quantization",
+    "lib/sia/rust/image-features",
     "lib/sia/rust/signature",
+    "lib/sia/rust/three-bit-quantization",
     "lib/sia/rust/utils",
+    "lib/sia/rust/watermarking",
+    "lib/sia/rust/web",
+
+    # moments
+    "lib/sia/rust/moments",
+    "lib/sia/rust/pseudo-zernike",
+    "lib/sia/rust/zernike",
 ]

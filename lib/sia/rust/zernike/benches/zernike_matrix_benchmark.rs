@@ -1,5 +1,5 @@
 use criterion::{criterion_group, criterion_main, Criterion};
-use feature::moments::zernike::get_zernike_matrix;
+use zernike::calc::get_zernike_matrix;
 
 fn zernike_matrix_benchmark(c: &mut Criterion) {
     let mut group = c.benchmark_group("zernike matrix");

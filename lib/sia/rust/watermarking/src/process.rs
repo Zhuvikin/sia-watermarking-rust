@@ -1,10 +1,10 @@
 use image::{GenericImage, GenericImageView, GrayImage, ImageBuffer, Luma};
 use imageproc::contrast::equalize_histogram;
-use ndarray::Array2;
+use ndarray::{Array2, Dim, Ix2};
 
 use embedding::{embed, extract};
-use feature::calculate_features;
-use feature::feature_types::FeaturesType;
+use image_features::calculate_features;
+use image_features::feature_types::FeaturesType;
 use signature::{sign, verify};
 use three_bit_quantization::{three_bit_dequantization, three_bit_quantization};
 use utils::bytes::vec_i64_to_bytes;
@@ -22,16 +22,17 @@ pub fn watermark_channel(
     dwt_levels: usize,
 ) -> GrayImage {
     let raw_data = Vec::from(channel.as_raw().clone());
-    let (width, height) = channel.dimensions();
+
+    let &(width, height) = &channel.dimensions();
     let shape = [width as usize, height as usize];
     let pixels_array = Array2::from_shape_vec(shape, raw_data).unwrap();
 
     // 1. Calculate channel features
     let equalized_image = equalize_histogram(channel);
     let equalized_image_array =
-        Array2::from_shape_vec(shape, equalized_image.as_raw().clone()).unwrap();
+        Array2::from_shape_vec(shape, Vec::from(equalized_image.as_raw().as_slice())).unwrap();
     let features = calculate_features(
-        equalized_image_array,
+        &equalized_image_array,
         FeaturesType::MomentsZernike,
         features_amount,
     );
@@ -81,9 +82,10 @@ pub fn authenticate_channel(
     // 1. Calculate channel features
     let equalized_image = equalize_histogram(channel);
     let equalized_image_array =
-        Array2::from_shape_vec(shape, equalized_image.as_raw().clone()).unwrap();
+        Array2::from_shape_vec(shape, Vec::from(equalized_image.as_raw().as_slice())).unwrap();
+
     let features = calculate_features(
-        equalized_image_array,
+        &equalized_image_array,
         FeaturesType::MomentsZernike,
         features_amount,
     );

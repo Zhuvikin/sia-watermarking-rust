@@ -10,7 +10,7 @@ base64 = "0.13.0"
 
 utils = { path = "../utils" }
 embedding = { path = "../embedding" }
-feature = { path = "../feature" }
+image-features = { path = "../image-features" }
 signature = { path = "../signature" }
 three-bit-quantization = { path = "../three-bit-quantization" }
 
